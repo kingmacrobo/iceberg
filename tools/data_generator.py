@@ -26,13 +26,36 @@ class DataGenerator():
             self.test_x = np.concatenate([test_band1[:, :, :, np.newaxis], test_band2[:, :, :, np.newaxis]], axis=-1)
 
     def train_generator(self):
-        pass
+        indicies = range(len(self.train_x))
+        while True:
+            choice = rd.sample(indicies, self.batch_size)
+            batch_x = self.train_x[choice]
+            batch_y = self.train_y[choice]
+
+            yield batch_x, batch_y
+
 
     def validate_generator(self):
-        pass
+        batches = self.get_validate_batch_count()
+        for batch in range(batches):
+            start = batch * self.batch_size
+            end = min((batch + 1) * self.batch_size, len(self.val_x))
+            batch_val_x = self.val_x[start: end]
+            batch_val_y = self.val_y[start: end]
+
+            yield  batch_val_x, batch_val_y
 
     def get_validate_batch_count(self):
-        pass
+        return len(self.val_x) / self.batch_size + 1 * (len(self.val_x) % self.batch_size)
 
     def test_generator(self):
-        pass
+        batches = self.get_test_batch_count()
+        for batch in range(batches):
+            start = batch * self.batch_size
+            end = min((batch + 1) * self.batch_size, len(self.test_x))
+            batch_test_x = self.test_x[start: end]
+
+            yield  batch_test_x
+
+    def get_test_batch_count(self):
+        return len(self.test_x) / self.batch_size + 1 * (len(self.test_x) % self.batch_size)
