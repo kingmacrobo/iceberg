@@ -10,12 +10,14 @@ class DataGenerator():
         self.train_json_path = 'data/train.json'
         self.test_json_path = 'data/test.json'
 
+        print 'Load data from json file...'
         samples = pd.read_json(self.train_json_path)
         band1 = np.array([np.array(band).astype(np.float32).reshape(75, 75) for band in samples["band_1"]])
         band2 = np.array([np.array(band).astype(np.float32).reshape(75, 75) for band in samples["band_2"]])
         samples_x = np.concatenate([band1[:, :, :, np.newaxis], band2[:, :, :, np.newaxis]], axis=-1)
         samples_y = np.array(samples["is_iceberg"])
 
+        print 'Split train data to train and val...'
         self.train_x, self.val_x, self.train_y, self.val_y = train_test_split(
             samples_x, samples_y, random_state=151018, train_size=0.75)
 

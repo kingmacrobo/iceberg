@@ -10,6 +10,8 @@ while True:
     band_1 = np.reshape(train['band_1'][index], (75, 75))
     band_2 = np.reshape(train['band_2'][index], (75, 75))
 
+    print band_1
+
     print index, train['is_iceberg'][index], train['inc_angle'][index]
     plt.subplot(121)
     plt.imshow(band_1)

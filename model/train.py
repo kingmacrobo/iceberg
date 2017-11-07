@@ -8,7 +8,7 @@ from nets import vgg_7
 from tools.data_generator import DataGenerator
 
 batch_size = 64
-lr = 0.001
+lr = 0.0001
 
 model_dir = 'checkpoints'
 record_file = 'record.json'
@@ -48,12 +48,12 @@ def train(session):
         saver.restore(session, ckpt.model_checkpoint_path)
         if os.path.exists(record_file):
             record_json = json.load(open(record_file, 'r'))
-            last_acc = record_json['logloss']
+            last_logloss = record_json['logloss']
             last_step = record_json['step']
         print 'Model restored from {}, last logloss: {}, last step: {}' \
             .format(ckpt.model_checkpoint_path, last_logloss, last_step)
 
-    data_generator = DataGenerator();
+    data_generator = DataGenerator()
     train_batch_gen = data_generator.train_generator()
 
     total_loss = 0
@@ -68,9 +68,10 @@ def train(session):
         b_cost = time() - t
 
         count += 1
+        total_loss += loss_out
         if step % 20 == 0:
             avg_loss = total_loss / count
-            print 'global step {}, avg loss {}, data time: {:.2f}, train time: {:.2f} s' \
+            print 'global step {}, avg loss {}, data time: {:.3f}, train time: {:.2f} s' \
                 .format(step, avg_loss, d_cost, b_cost)
             total_loss = 0
             count = 0
